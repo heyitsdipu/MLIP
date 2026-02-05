@@ -1,0 +1,19 @@
+# Core scientific stack
+matplotlib
+plotly
+numpy
+pandas
+
+# Pytorch
+torch
+lightning
+kora
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Jupyter ecosystem
+jupyterlab
+ipykernel
+ipywidgets
+jupyterlab-widgets
+nbconvert
+nbformat
