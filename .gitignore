@@ -1,0 +1,84 @@
+############################
+# Python
+############################
+__pycache__/
+*.py[cod]
+*$py.class
+
+############################
+# Jupyter
+############################
+.ipynb_checkpoints/
+
+############################
+# Virtual environments
+############################
+.env
+.venv
+venv/
+env/
+ENV/
+
+############################
+# ML / training artifacts
+############################
+runs/
+wandb/
+logs/
+lightning_logs/
+tensorboard/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.h5
+
+############################
+# Numpy / arrays / temp outputs
+############################
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.joblib
+
+############################
+# Compiled / build
+############################
+build/
+dist/
+*.egg-info/
+
+############################
+# OS
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# IDE
+############################
+.vscode/
+.idea/
+
+############################
+# Simulation temporary
+############################
+*.out
+*.log
+*.traj
+*.xyz
+*.gro
+*.xtc
+*.trr
+*.dcd
+
+############################
+# Large generated results
+############################
+results/
+outputs/
+checkpoints/
+cache/
+tmp/
+
