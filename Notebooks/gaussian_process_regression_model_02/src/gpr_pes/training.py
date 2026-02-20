@@ -1,4 +1,7 @@
 # src/gpr_pes/train.py
+import torch
+import gpytorch
+
 def train_model(model, likelihood, x_train, y_train, print_hp=False):
     """
     Train Gaussian Process hyperparameters by maximizing 
@@ -59,7 +62,7 @@ def train_model(model, likelihood, x_train, y_train, print_hp=False):
 
         # monitoring
         if (i+1) % 10 == 0 and print_hp:
-            print(f"Iter: {i+1:3d} | Loss: {loss.item():.3f} | Output scale: {model.covar_module.outputscale.item():.3f} | Length scale: {model.covar_module.base_kernel.lengthscale.item():.3f} | Noise: {model.likelihood.noise.item():.3f}  ")
+            print(f"Iter: {i+1:3d} | Loss: {loss.item():.3f} | Output scale: {model.covar_module.outputscale.item():.3f} | Length scale: {model.covar_module.base_kernel.lengthscale.item():.3f} | Noise: {model.likelihood.noise.item():.3f} ")
 
         # Update hyperparameters
         optimizer.step()

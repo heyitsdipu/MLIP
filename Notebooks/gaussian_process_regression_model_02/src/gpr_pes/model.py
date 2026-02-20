@@ -76,3 +76,33 @@ class ExactGPModel(gpytorch.models.ExactGP):
         mean_x = self.mean_module(x)
         covar_x = self.covar_module(x)
         return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
+
+class GPMoldeWithDerivatives(gpytorch.models.ExactGP):
+    """"
+    
+    Exact Gaussian Regression Model with gradient
+    
+    """
+    def __init__(
+        self, 
+        train_x: torch.tensor, 
+        train_y: torch.tensor, 
+        likelihood: gpytorch.likelihoods.GaussianLikelihood, 
+    ) -> None:
+        super().__init__(train_x, train_y, likelihood)
+        self.mean_module = gpytorch.means.ConstantMeanGrad()
+        self.base_kernel = gpytorch.kernels.RBFKernelGrad(ard_num_dims=2)
+        
+        # Covariance function (kernel):
+        # RBF kernel assumes smoothness:
+        #   k(x, x') = σ_f² exp( -||x-x'||² / (2 l²) )
+        # ScaleKernel wraps the base kernel to learn σ_f² (outputscale).
+        self.covar_module = gpytorch.kernels.ScaleKernel(self.base_kernel)
+
+
+    def forward(self, x):
+        mean_x = self.mean_module(x)
+        covar_x = self.covar_module(x)
+        return gpytorch.distributions.MultitaskMultivariateNormal(mean_x, covar_x)
+        
+        
