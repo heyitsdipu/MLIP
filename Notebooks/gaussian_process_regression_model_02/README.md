@@ -1,3 +1,3 @@
 # Gaussian Process Regression Models¶
 
-We start  this 
+In this notebook, I started again with the Mueller-Brown potential energy surface. 

@@ -38,7 +38,7 @@ def train_model(model, likelihood, x_train, y_train, print_hp=False):
             print(f"Parmeters name: {param_name:42} value = {param.item():9.5f}")
         print("--------------------------------------------------------------------")
 
-    training_iter = 1000 # Number of gradient steps
+    training_iter = 10000 # Number of gradient steps
 
     # Optimizer (using stochastic gradient descent)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
@@ -96,7 +96,7 @@ def train_model_with_derivatives(model, likelihood, x_train, y_train, print_hp=T
     print_hp: bool
     """
 
-    training_iter = 5000 # Number of gradient steps
+    training_iter = 1000 # Number of gradient steps
 
     # Optimizer (using stochastic gradient descent)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
@@ -104,6 +104,8 @@ def train_model_with_derivatives(model, likelihood, x_train, y_train, print_hp=T
     # Marginial log likelihood (MLL)
     mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)
 
+    # store losses here
+    losses = []
     for i in range(training_iter):
 
         # clear gradients from previous iteration
@@ -118,11 +120,16 @@ def train_model_with_derivatives(model, likelihood, x_train, y_train, print_hp=T
         # Backpropagation
         loss.backward()
 
+        # store loss for monitoring
+        losses.append(loss.item())
+
         # monitoring
         if (i+1) % 10 == 0 and print_hp:
             print(f"Iter: {i+1:3d} | Loss: {loss.item():.3f} | Output scale: {model.covar_module.outputscale:6.3f} | Length scale: {model.covar_module.base_kernel.lengthscale.squeeze()[0]:6.3f} {model.covar_module.base_kernel.lengthscale.squeeze()[1]:6.3f}  Noise: {model.likelihood.noise.item():6.3f} ")
         
         # Update hyperparameters
         optimizer.step()
+    
+    return losses
 
 

@@ -77,6 +77,7 @@ class ExactGPModel(gpytorch.models.ExactGP):
         covar_x = self.covar_module(x)
         return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
 
+
 class GPModelWithDerivatives(gpytorch.models.ExactGP):
     """"
     
