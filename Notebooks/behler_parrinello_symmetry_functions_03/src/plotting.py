@@ -1,6 +1,28 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+def cutoff_function(Rij, Rc):
+    """
+    Compute the cutoff function f_c(R_ij).
+
+    Parameters
+    ----------
+    Rij : array-like
+        Pairwise distances.
+
+    Rc : float
+        Cutoff distance.
+
+    Returns
+    -------
+    fc : array-like
+        Cutoff function values for each R_ij.
+    """
+    Rij = np.asarray(Rij)
+    fc = 0.5 * (np.cos(np.pi * Rij / Rc) + 1)
+    fc[Rij > Rc] = 0.0
+    return fc
+
 
 
 def plot_pairwise_vector(Rij, Rc, etas):
@@ -33,8 +55,7 @@ def plot_pairwise_vector(Rij, Rc, etas):
     Rij = np.asarray(Rij)
 
     # Cutoff function with proper truncation
-    fc = 0.5 * (np.cos(np.pi * Rij / Rc) + 1)
-    fc[Rij > Rc] = 0.0
+    fc = cutoff_function(Rij, Rc)
 
     plt.figure(figsize=(8, 6))
 
