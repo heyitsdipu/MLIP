@@ -72,3 +72,57 @@ def train_model(model, likelihood, x_train, y_train, print_hp=False):
         for param_name, param in model.named_parameters():
             print(f"Parameter name: {param_name:42} value = {param.item():9.5f}")
     print("--------------------------------------------------------------------")
+
+
+def train_model_with_derivatives(model, likelihood, x_train, y_train, print_hp=True):
+    """
+    Train Gaussian Process hyperparameters by maximizing 
+    the marginal log likelihood, using both function values and derivatives.
+
+    Parameters:
+    -----------
+    model : GPMoldeWithDerivatives
+        GP model that incorporates derivative information.
+
+    likelihood : GaussianLikelihood
+        Observation noise model.
+
+    x_train : torch.Tensor
+        Training input locations (N x D)
+
+    y_train : torch.Tensor
+        Training outputs (N, )
+
+    print_hp: bool
+    """
+
+    training_iter = 5000 # Number of gradient steps
+
+    # Optimizer (using stochastic gradient descent)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+
+    # Marginial log likelihood (MLL)
+    mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)
+
+    for i in range(training_iter):
+
+        # clear gradients from previous iteration
+        optimizer.zero_grad()
+
+        # Forward pass:
+        output = model(x_train)
+
+        # Compute negative log marginal likelihood
+        loss = -mll(output, y_train)
+
+        # Backpropagation
+        loss.backward()
+
+        # monitoring
+        if (i+1) % 10 == 0 and print_hp:
+            print(f"Iter: {i+1:3d} | Loss: {loss.item():.3f} | Output scale: {model.covar_module.outputscale:6.3f} | Length scale: {model.covar_module.base_kernel.lengthscale.squeeze()[0]:6.3f} {model.covar_module.base_kernel.lengthscale.squeeze()[1]:6.3f}  Noise: {model.likelihood.noise.item():6.3f} ")
+        
+        # Update hyperparameters
+        optimizer.step()
+
+
